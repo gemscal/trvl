@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Avatar, Button, Paper, Grid, Typography, Container } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { GoogleLogin } from '@react-oauth/google';
+import jwt_decode from 'jwt-decode';
 
 import Input from "./Input";
 import useStyles from './styles';
@@ -16,28 +16,33 @@ const Auth = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = () => {}
 
-    }
-
-    const handleChange = () => {
-
-    }
+    const handleChange = () => {}
 
     const switchMode = () => {
         setIsSignup((prevIsSignup) => !prevIsSignup);
         handleShowPassword(false);
     }
 
-    const googleSuccess = async (res) => {
-        console.log(res);
-    }
-
-    const googleFailure = (error) => {
-        console.log(error);
-        console.log("Google Sign In was unsuccessful. Try Again Later");
+    function handleCallbackResponse(response) {
+        console.log("Encoded" + response.credential);
+        const userObject = jwt_decode(response.credential);
+        console.log(userObject);
     }
     
+    useEffect(() => {
+        /* global google */
+        google.accounts.id.initialize({
+            client_id: "642572922164-3oujt6v6hk8s95ttdjgndeo096j6047l.apps.googleusercontent.com",
+            callback: handleCallbackResponse
+        })
+
+        google.accounts.id.renderButton(
+            document.getElementById("googleSignInDiv"),
+            { theme: "outline", size: "large" }
+        )
+    })
 
     return (
         <Container component="main" maxWidth="xs">
@@ -63,14 +68,9 @@ const Auth = () => {
                     <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
                         { isSignup ? 'Sign Up' : 'Sign In' }
                     </Button>
-                    <GoogleLogin
-                        onSuccess={credentialResponse => {
-                            console.log(credentialResponse);
-                        }}
-                        onError={() => {
-                            console.log('Login Failed');
-                        }}
-                    />
+                    <div id="googleSignInDiv">
+
+                    </div>
                     <Grid container justifyContent="flex-end">
                         <Grid item>
                             <Button onClick={switchMode}>
