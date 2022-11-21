@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Avatar, Button, Paper, Grid, Typography, Container } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import jwt_decode from 'jwt-decode';
+import { useDispatch } from "react-redux";
 
 import Input from "./Input";
 import useStyles from './styles';
 import Icon from './icon'
 
 const Auth = () => {
+    const GOOGLE_LOGIN = process.env.REACT_APP_GOOGLE_CLIENT_ID;
     const classes = useStyles();
+    const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
     const [isSignup, setIsSignup] = useState(false);
 
@@ -25,16 +28,19 @@ const Auth = () => {
         handleShowPassword(false);
     }
 
+    //successfully login
     function handleCallbackResponse(response) {
-        console.log("Encoded" + response.credential);
-        const userObject = jwt_decode(response.credential);
-        console.log(userObject);
+        const token = response.credential;
+        const result = jwt_decode(response.credential);
+        console.log(result);
+
+        dispatch({ type: 'AUTH', data: { result, token } })
     }
     
     useEffect(() => {
         /* global google */
         google.accounts.id.initialize({
-            client_id: process.env.GOOGLE_CLIENT_ID,
+            client_id: GOOGLE_LOGIN,
             callback: handleCallbackResponse
         })
 
@@ -68,9 +74,7 @@ const Auth = () => {
                     <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
                         { isSignup ? 'Sign Up' : 'Sign In' }
                     </Button>
-                    <div id="googleSignInDiv">
-
-                    </div>
+                    <div id="googleSignInDiv"></div>
                     <Grid container justifyContent="flex-end">
                         <Grid item>
                             <Button onClick={switchMode}>
