@@ -3,14 +3,15 @@ import { Avatar, Button, Paper, Grid, Typography, Container } from '@material-ui
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import jwt_decode from 'jwt-decode';
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 import Input from "./Input";
 import useStyles from './styles';
-import Icon from './icon'
 
 const Auth = () => {
     const GOOGLE_LOGIN = process.env.REACT_APP_GOOGLE_CLIENT_ID;
     const classes = useStyles();
+    const history = useHistory();
     const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
     const [isSignup, setIsSignup] = useState(false);
@@ -35,6 +36,7 @@ const Auth = () => {
         console.log(result);
 
         dispatch({ type: 'AUTH', data: { result, token } })
+        history.push('/');
     }
     
     useEffect(() => {
