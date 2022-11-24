@@ -40,7 +40,7 @@ const Auth = () => {
 
     const switchMode = () => {
         setIsSignup((prevIsSignup) => !prevIsSignup);
-        handleShowPassword(false);
+        setShowPassword(false);
     }
 
     //successfully login
@@ -55,15 +55,15 @@ const Auth = () => {
     
     useEffect(() => {
         /* global google */
-        google.accounts.id.initialize({
-            client_id: GOOGLE_LOGIN,
-            callback: handleCallbackResponse
-        })
+        // google.accounts.id.initialize({
+        //     client_id: GOOGLE_LOGIN,
+        //     callback: handleCallbackResponse
+        // })
 
-        google.accounts.id.renderButton(
-            document.getElementById("googleSignInDiv"),
-            { theme: "outline", size: "large" }
-        )
+        // google.accounts.id.renderButton(
+        //     document.getElementById("googleSignInDiv"),
+        //     { theme: "outline", size: "large" }
+        // )
     })
 
     return (
@@ -79,12 +79,12 @@ const Auth = () => {
                             isSignup && (
                                 <>
                                     <Input name="firstName" label="First Name" handleChange={handleChange} autoFocus half />
-                                    <Input name="lastName" label="Last Name" handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} half/>
+                                    <Input name="lastName" label="Last Name" handleChange={handleChange} type='text' handleShowPassword={handleShowPassword} half/>
                                 </>
                             )
                         }
                         <Input name="email" label="Email" handleChange={handleChange} />
-                        <Input name="password" label="Password" handleChange={handleChange} type="password" />
+                        <Input name="password" label="Password" type={showPassword ? 'text' : 'password'} handleChange={handleChange} handleShowPassword={handleShowPassword}/>
                         { isSignup && <Input name="confirmPassword" label="Repeat Password" handleChange={handleChange} type="password" /> }
                     </Grid>
                     <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
